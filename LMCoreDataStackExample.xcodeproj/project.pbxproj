@@ -21,6 +21,8 @@
 		A11790291BC315CA0029B8E1 /* Entity+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = A11790251BC315CA0029B8E1 /* Entity+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
 		A117902A1BC315CA0029B8E1 /* Entity.m in Sources */ = {isa = PBXBuildFile; fileRef = A11790271BC315CA0029B8E1 /* Entity.m */; settings = {ASSET_TAGS = (); }; };
 		A117902B1BC315CA0029B8E1 /* Entity.m in Sources */ = {isa = PBXBuildFile; fileRef = A11790271BC315CA0029B8E1 /* Entity.m */; settings = {ASSET_TAGS = (); }; };
+		A11790421BC322410029B8E1 /* LMCDStackFetchResultsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11790411BC322410029B8E1 /* LMCDStackFetchResultsController.m */; settings = {ASSET_TAGS = (); }; };
+		A11790431BC322410029B8E1 /* LMCDStackFetchResultsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11790411BC322410029B8E1 /* LMCDStackFetchResultsController.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,8 @@
 		A11790251BC315CA0029B8E1 /* Entity+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Entity+CoreDataProperties.m"; sourceTree = "<group>"; };
 		A11790261BC315CA0029B8E1 /* Entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
 		A11790271BC315CA0029B8E1 /* Entity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Entity.m; sourceTree = "<group>"; };
+		A11790401BC322410029B8E1 /* LMCDStackFetchResultsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMCDStackFetchResultsController.h; sourceTree = "<group>"; };
+		A11790411BC322410029B8E1 /* LMCDStackFetchResultsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMCDStackFetchResultsController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +141,8 @@
 				A11790171BC2FD930029B8E1 /* LMCDStackConfig.h */,
 				A11790111BC2FC9D0029B8E1 /* NSManagedObjectContext+Queries.h */,
 				A11790121BC2FC9D0029B8E1 /* NSManagedObjectContext+Queries.m */,
+				A11790401BC322410029B8E1 /* LMCDStackFetchResultsController.h */,
+				A11790411BC322410029B8E1 /* LMCDStackFetchResultsController.m */,
 				A11790131BC2FC9D0029B8E1 /* LMCDStack.h */,
 				A11790141BC2FC9D0029B8E1 /* LMCDStack.m */,
 			);
@@ -259,6 +265,7 @@
 				A11790151BC2FC9D0029B8E1 /* NSManagedObjectContext+Queries.m in Sources */,
 				A1178FF31BC2FC4B0029B8E1 /* ViewController.m in Sources */,
 				A1178FF01BC2FC4B0029B8E1 /* AppDelegate.m in Sources */,
+				A11790421BC322410029B8E1 /* LMCDStackFetchResultsController.m in Sources */,
 				A1178FED1BC2FC4B0029B8E1 /* main.m in Sources */,
 				A117901A1BC30D400029B8E1 /* Model.xcdatamodeld in Sources */,
 				A11790281BC315CA0029B8E1 /* Entity+CoreDataProperties.m in Sources */,
@@ -271,6 +278,7 @@
 			files = (
 				A117902B1BC315CA0029B8E1 /* Entity.m in Sources */,
 				A11790291BC315CA0029B8E1 /* Entity+CoreDataProperties.m in Sources */,
+				A11790431BC322410029B8E1 /* LMCDStackFetchResultsController.m in Sources */,
 				A11790061BC2FC4B0029B8E1 /* LMCoreDataStackExampleTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
