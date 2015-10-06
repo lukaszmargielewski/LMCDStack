@@ -61,6 +61,7 @@
 		A11790271BC315CA0029B8E1 /* Entity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Entity.m; sourceTree = "<group>"; };
 		A11790401BC322410029B8E1 /* LMCDStackFetchResultsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMCDStackFetchResultsController.h; sourceTree = "<group>"; };
 		A11790411BC322410029B8E1 /* LMCDStackFetchResultsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMCDStackFetchResultsController.m; sourceTree = "<group>"; };
+		A1CCCAB61BC483A4002EC6A6 /* LMCDStack.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = LMCDStack.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +85,7 @@
 		A1178FDF1BC2FC4B0029B8E1 = {
 			isa = PBXGroup;
 			children = (
+				A1CCCAB61BC483A4002EC6A6 /* LMCDStack.podspec */,
 				A11790231BC315CA0029B8E1 /* CoreDataEntities */,
 				A11790101BC2FC7C0029B8E1 /* LMCDStack */,
 				A1178FEA1BC2FC4B0029B8E1 /* LMCoreDataStackExample */,
@@ -460,6 +462,7 @@
 				A117900C1BC2FC4B0029B8E1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A117900D1BC2FC4B0029B8E1 /* Build configuration list for PBXNativeTarget "LMCoreDataStackExampleTests" */ = {
 			isa = XCConfigurationList;
@@ -468,6 +471,7 @@
 				A117900F1BC2FC4B0029B8E1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
