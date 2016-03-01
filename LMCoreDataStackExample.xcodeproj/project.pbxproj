@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A113D3D31C863DF900351601 /* LMCDStack+Debug.m in Sources */ = {isa = PBXBuildFile; fileRef = A113D3C91C863DF900351601 /* LMCDStack+Debug.m */; };
-		A113D3D41C863DF900351601 /* LMCDStack.m in Sources */ = {isa = PBXBuildFile; fileRef = A113D3CB1C863DF900351601 /* LMCDStack.m */; };
-		A113D3D51C863DF900351601 /* LMCDStackFetchResultsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A113D3CE1C863DF900351601 /* LMCDStackFetchResultsController.m */; };
-		A113D3D61C863DF900351601 /* NSManagedObjectContext+Queries.m in Sources */ = {isa = PBXBuildFile; fileRef = A113D3D01C863DF900351601 /* NSManagedObjectContext+Queries.m */; };
-		A113D3D71C863DF900351601 /* NSNotification+LMCDStack.m in Sources */ = {isa = PBXBuildFile; fileRef = A113D3D21C863DF900351601 /* NSNotification+LMCDStack.m */; };
+		A113D3F01C86476400351601 /* LMCDStackFetchResultsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A113D3E21C86476400351601 /* LMCDStackFetchResultsController.m */; };
+		A113D3F11C86476400351601 /* LMCDStack.m in Sources */ = {isa = PBXBuildFile; fileRef = A113D3E51C86476400351601 /* LMCDStack.m */; };
+		A113D3F21C86476400351601 /* LMCDStack+Debug.m in Sources */ = {isa = PBXBuildFile; fileRef = A113D3E91C86476400351601 /* LMCDStack+Debug.m */; };
+		A113D3F31C86476400351601 /* NSManagedObjectContext+Queries.m in Sources */ = {isa = PBXBuildFile; fileRef = A113D3EB1C86476400351601 /* NSManagedObjectContext+Queries.m */; };
+		A113D3F41C86476400351601 /* NSNotification+LMCDStack.m in Sources */ = {isa = PBXBuildFile; fileRef = A113D3ED1C86476400351601 /* NSNotification+LMCDStack.m */; };
+		A113D3F51C86476400351601 /* UIViewController+LMCDStack.m in Sources */ = {isa = PBXBuildFile; fileRef = A113D3EF1C86476400351601 /* UIViewController+LMCDStack.m */; };
 		A1178FED1BC2FC4B0029B8E1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A1178FEC1BC2FC4B0029B8E1 /* main.m */; };
 		A1178FF01BC2FC4B0029B8E1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A1178FEF1BC2FC4B0029B8E1 /* AppDelegate.m */; };
 		A1178FF31BC2FC4B0029B8E1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1178FF21BC2FC4B0029B8E1 /* ViewController.m */; };
@@ -37,17 +38,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A113D3C81C863DF900351601 /* LMCDStack+Debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LMCDStack+Debug.h"; sourceTree = "<group>"; };
-		A113D3C91C863DF900351601 /* LMCDStack+Debug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LMCDStack+Debug.m"; sourceTree = "<group>"; };
-		A113D3CA1C863DF900351601 /* LMCDStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMCDStack.h; sourceTree = "<group>"; };
-		A113D3CB1C863DF900351601 /* LMCDStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMCDStack.m; sourceTree = "<group>"; };
-		A113D3CC1C863DF900351601 /* LMCDStackConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMCDStackConfig.h; sourceTree = "<group>"; };
-		A113D3CD1C863DF900351601 /* LMCDStackFetchResultsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMCDStackFetchResultsController.h; sourceTree = "<group>"; };
-		A113D3CE1C863DF900351601 /* LMCDStackFetchResultsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMCDStackFetchResultsController.m; sourceTree = "<group>"; };
-		A113D3CF1C863DF900351601 /* NSManagedObjectContext+Queries.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+Queries.h"; sourceTree = "<group>"; };
-		A113D3D01C863DF900351601 /* NSManagedObjectContext+Queries.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+Queries.m"; sourceTree = "<group>"; };
-		A113D3D11C863DF900351601 /* NSNotification+LMCDStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotification+LMCDStack.h"; sourceTree = "<group>"; };
-		A113D3D21C863DF900351601 /* NSNotification+LMCDStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNotification+LMCDStack.m"; sourceTree = "<group>"; };
+		A113D3E11C86476400351601 /* LMCDStackFetchResultsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMCDStackFetchResultsController.h; sourceTree = "<group>"; };
+		A113D3E21C86476400351601 /* LMCDStackFetchResultsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMCDStackFetchResultsController.m; sourceTree = "<group>"; };
+		A113D3E41C86476400351601 /* LMCDStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMCDStack.h; sourceTree = "<group>"; };
+		A113D3E51C86476400351601 /* LMCDStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMCDStack.m; sourceTree = "<group>"; };
+		A113D3E61C86476400351601 /* LMCDStackConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMCDStackConfig.h; sourceTree = "<group>"; };
+		A113D3E81C86476400351601 /* LMCDStack+Debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LMCDStack+Debug.h"; sourceTree = "<group>"; };
+		A113D3E91C86476400351601 /* LMCDStack+Debug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LMCDStack+Debug.m"; sourceTree = "<group>"; };
+		A113D3EA1C86476400351601 /* NSManagedObjectContext+Queries.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+Queries.h"; sourceTree = "<group>"; };
+		A113D3EB1C86476400351601 /* NSManagedObjectContext+Queries.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+Queries.m"; sourceTree = "<group>"; };
+		A113D3EC1C86476400351601 /* NSNotification+LMCDStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotification+LMCDStack.h"; sourceTree = "<group>"; };
+		A113D3ED1C86476400351601 /* NSNotification+LMCDStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNotification+LMCDStack.m"; sourceTree = "<group>"; };
+		A113D3EE1C86476400351601 /* UIViewController+LMCDStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+LMCDStack.h"; sourceTree = "<group>"; };
+		A113D3EF1C86476400351601 /* UIViewController+LMCDStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+LMCDStack.m"; sourceTree = "<group>"; };
 		A1178FE81BC2FC4B0029B8E1 /* LMCoreDataStackExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LMCoreDataStackExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1178FEC1BC2FC4B0029B8E1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		A1178FEE1BC2FC4B0029B8E1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -87,29 +90,55 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A113D3C71C863DF900351601 /* LMCDStack */ = {
+		A113D3DF1C86476400351601 /* LMCDStack */ = {
 			isa = PBXGroup;
 			children = (
-				A113D3C81C863DF900351601 /* LMCDStack+Debug.h */,
-				A113D3C91C863DF900351601 /* LMCDStack+Debug.m */,
-				A113D3CA1C863DF900351601 /* LMCDStack.h */,
-				A113D3CB1C863DF900351601 /* LMCDStack.m */,
-				A113D3CC1C863DF900351601 /* LMCDStackConfig.h */,
-				A113D3CD1C863DF900351601 /* LMCDStackFetchResultsController.h */,
-				A113D3CE1C863DF900351601 /* LMCDStackFetchResultsController.m */,
-				A113D3CF1C863DF900351601 /* NSManagedObjectContext+Queries.h */,
-				A113D3D01C863DF900351601 /* NSManagedObjectContext+Queries.m */,
-				A113D3D11C863DF900351601 /* NSNotification+LMCDStack.h */,
-				A113D3D21C863DF900351601 /* NSNotification+LMCDStack.m */,
+				A113D3E01C86476400351601 /* Addons */,
+				A113D3E31C86476400351601 /* Core */,
+				A113D3E71C86476400351601 /* Extensions */,
 			);
 			path = LMCDStack;
+			sourceTree = "<group>";
+		};
+		A113D3E01C86476400351601 /* Addons */ = {
+			isa = PBXGroup;
+			children = (
+				A113D3E11C86476400351601 /* LMCDStackFetchResultsController.h */,
+				A113D3E21C86476400351601 /* LMCDStackFetchResultsController.m */,
+			);
+			path = Addons;
+			sourceTree = "<group>";
+		};
+		A113D3E31C86476400351601 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				A113D3E41C86476400351601 /* LMCDStack.h */,
+				A113D3E51C86476400351601 /* LMCDStack.m */,
+				A113D3E61C86476400351601 /* LMCDStackConfig.h */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		A113D3E71C86476400351601 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				A113D3E81C86476400351601 /* LMCDStack+Debug.h */,
+				A113D3E91C86476400351601 /* LMCDStack+Debug.m */,
+				A113D3EA1C86476400351601 /* NSManagedObjectContext+Queries.h */,
+				A113D3EB1C86476400351601 /* NSManagedObjectContext+Queries.m */,
+				A113D3EC1C86476400351601 /* NSNotification+LMCDStack.h */,
+				A113D3ED1C86476400351601 /* NSNotification+LMCDStack.m */,
+				A113D3EE1C86476400351601 /* UIViewController+LMCDStack.h */,
+				A113D3EF1C86476400351601 /* UIViewController+LMCDStack.m */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		A1178FDF1BC2FC4B0029B8E1 = {
 			isa = PBXGroup;
 			children = (
-				A113D3C71C863DF900351601 /* LMCDStack */,
 				A1CCCAB61BC483A4002EC6A6 /* LMCDStack.podspec */,
+				A113D3DF1C86476400351601 /* LMCDStack */,
 				A11790231BC315CA0029B8E1 /* CoreDataEntities */,
 				A1178FEA1BC2FC4B0029B8E1 /* LMCoreDataStackExample */,
 				A11790041BC2FC4B0029B8E1 /* LMCoreDataStackExampleTests */,
@@ -271,16 +300,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A113D3D71C863DF900351601 /* NSNotification+LMCDStack.m in Sources */,
+				A113D3F41C86476400351601 /* NSNotification+LMCDStack.m in Sources */,
 				A117902A1BC315CA0029B8E1 /* Entity.m in Sources */,
 				A1178FF31BC2FC4B0029B8E1 /* ViewController.m in Sources */,
 				A1178FF01BC2FC4B0029B8E1 /* AppDelegate.m in Sources */,
+				A113D3F01C86476400351601 /* LMCDStackFetchResultsController.m in Sources */,
+				A113D3F51C86476400351601 /* UIViewController+LMCDStack.m in Sources */,
+				A113D3F11C86476400351601 /* LMCDStack.m in Sources */,
+				A113D3F21C86476400351601 /* LMCDStack+Debug.m in Sources */,
 				A1178FED1BC2FC4B0029B8E1 /* main.m in Sources */,
-				A113D3D51C863DF900351601 /* LMCDStackFetchResultsController.m in Sources */,
-				A113D3D41C863DF900351601 /* LMCDStack.m in Sources */,
 				A117901A1BC30D400029B8E1 /* Model.xcdatamodeld in Sources */,
-				A113D3D31C863DF900351601 /* LMCDStack+Debug.m in Sources */,
-				A113D3D61C863DF900351601 /* NSManagedObjectContext+Queries.m in Sources */,
+				A113D3F31C86476400351601 /* NSManagedObjectContext+Queries.m in Sources */,
 				A11790281BC315CA0029B8E1 /* Entity+CoreDataProperties.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
