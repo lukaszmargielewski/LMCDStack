@@ -16,7 +16,6 @@
 - (void)deleteManagedObjectsFromObjectContainingObjectID:(id)toDelete;
 - (void)deleteManagedObjectsFromArrayContainingObjectIDs:(NSArray *)toDelete;
 
-
 - (NSArray *)performPredicate:(NSPredicate *)predicate
                    entityName:(NSString *)entityName
                   sortedByKey:(NSString *)key
@@ -45,4 +44,5 @@
 - (BOOL)saveIfNeededAndReset:(BOOL)reset;
 
 + (void)displayValidationError:(NSError *)anError;
+
 @end

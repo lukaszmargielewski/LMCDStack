@@ -8,6 +8,7 @@
 
 #import "LMCDStack.h"
 #import "LMCDStackConfig.h"
+#import "NSManagedObjectContext+Queries.h"
 
 #ifdef DEBUG
     #import "LMCDStack+Debug.h"

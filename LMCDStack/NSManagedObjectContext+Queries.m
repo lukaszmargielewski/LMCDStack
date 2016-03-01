@@ -200,7 +200,7 @@
 
 #pragma mark - Calculation helpers:
 
--(NSUInteger)countEntitities:(NSString *)entityName predicate:(NSPredicate *)predicate{
+- (NSUInteger)countEntitities:(NSString *)entityName predicate:(NSPredicate *)predicate{
     
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *es = [NSEntityDescription entityForName:entityName inManagedObjectContext:self];
@@ -221,18 +221,25 @@
     
 }
 
--(NSNumber *)minimumValueForKey:(NSString *)idKey entityName:(NSString *)entityName predicate:(NSPredicate *)predicate{
+- (NSNumber *)minimumValueForKey:(NSString *)idKey
+                      entityName:(NSString *)entityName
+                       predicate:(NSPredicate *)predicate{
     
     return [self valueForKey:idKey function:@"min:" entityName:entityName predicate:predicate];
 }
--(NSNumber *)maximumValueForKey:(NSString *)idKey entityName:(NSString *)entityName predicate:(NSPredicate *)predicate{
+- (NSNumber *)maximumValueForKey:(NSString *)idKey
+                      entityName:(NSString *)entityName
+                       predicate:(NSPredicate *)predicate{
 
 
     return [self valueForKey:idKey function:@"max:" entityName:entityName predicate:predicate];
     
 }
 
--(NSNumber *)valueForKey:(NSString *)idKey function:(NSString *)function entityName:(NSString *)entityName predicate:(NSPredicate *)predicate{
+- (NSNumber *)valueForKey:(NSString *)idKey
+                 function:(NSString *)function
+               entityName:(NSString *)entityName
+                predicate:(NSPredicate *)predicate {
     
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self];
@@ -248,22 +255,14 @@
     if (predicate) {
         [request setPredicate:predicate];
     }
-    // Create an expression for the key path.
     NSExpression *keyPathExpression = [NSExpression expressionForKeyPath:idKey];
-    
-    // Create an expression to represent the maximum value at the key path 'creationDate'
     NSExpression *minExpression = [NSExpression expressionForFunction:function arguments:[NSArray arrayWithObject:keyPathExpression]];
-    
-    // Create an expression description using the maxExpression and returning a date.
     NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
-    
-    // The name is the key that will be used in the dictionary for the return value.
     NSString *expName = [NSString stringWithFormat:@"%@_%@", function, idKey];
     [expressionDescription setName:expName];
     [expressionDescription setExpression:minExpression];
     //[expressionDescription setExpressionResultType:NSDateAttributeType];
     
-    // Set the request's properties to fetch just the property represented by the expressions.
     [request setPropertiesToFetch:[NSArray arrayWithObject:expressionDescription]];
     
     // Execute the fetch.
