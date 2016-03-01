@@ -8,7 +8,6 @@
 
 #import "LMCDStack.h"
 #import "LMCDStackConfig.h"
-#import "NSManagedObjectContext+Queries.h"
 
 #ifdef DEBUG
     #import "LMCDStack+Debug.h"
@@ -19,41 +18,43 @@ NSString * const kLMCDStackDidChangeNotificationName = @"kLMCDStackDidChangeNoti
 
 @interface LMCDStack ()
 
-@property (nonatomic, strong, readonly) NSString *cacheDirectory;
-@property (nonatomic, strong, readonly) NSString *documentsDirectory;
+@property (nonatomic, strong, readwrite, nonnull)  NSManagedObjectModel            *managedObjectModel;
+@property (nonatomic, strong, readwrite, nonnull)  NSManagedObjectContext          *mainThreadContext;
+@property (nonatomic, strong, readwrite, nullable) NSManagedObjectContext          *backgroundThreadContext;
+
+@property (nonatomic, strong, readwrite, nonnull) NSPersistentStoreCoordinator  *persistentStoreCoordinator;
+@property (nonatomic, strong, readwrite, nonnull) NSURL *persistentStorePath;
+
+@property (nonatomic, strong, readwrite, nonnull) NSString *fileName;
+@property (nonatomic, strong, readwrite, nonnull) NSString *storeType;
+
+@property (nonatomic, strong, readwrite, nonnull) NSString *cacheDirectory;
+@property (nonatomic, strong, readwrite, nonnull) NSString *documentsDirectory;
 
 @end
 
 @implementation LMCDStack
 
-@synthesize mainThreadContext = _mainThreadContext;
-@synthesize managedObjectModel = _managedObjectModel;
-@synthesize backgroundThreadContext = _backgroundThreadContext;
-@synthesize name = _name;
-@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-@synthesize persistentStorePath = _persistentStorePath;
-@synthesize cacheDirectory = _cacheDirectory, documentsDirectory = _documentsDirectory;
-@synthesize storeType = _storeType;
 
 - (void)dealloc {
 	
     [self cleanBackgroundThreadContext];
 }
 
-- (instancetype)initWithName:(NSString *)name {
+- (instancetype)initWithFileName:(NSString *)fileName {
 
-    return [self initWithName:name storeType:NSSQLiteStoreType];
+    return [self initWithFileName:fileName storeType:NSSQLiteStoreType];
 }
 
-- (instancetype)initWithName:(NSString *)name
-                   storeType:(NSString *)storeType {
+- (instancetype)initWithFileName:(NSString *)fileName
+                       storeType:(NSString *)storeType {
     
     self = [super init];
     
 	if (self) {
 		
-        _name = name;
-        _storeType = storeType ? storeType : NSSQLiteStoreType;
+        self.fileName = fileName;
+        self.storeType = storeType ? storeType : NSSQLiteStoreType;
 	}
 	return self;
 }
@@ -141,16 +142,8 @@ NSString * const kLMCDStackDidChangeNotificationName = @"kLMCDStackDidChangeNoti
     @synchronized(self){
         
         if (_persistentStorePath == nil) {
-        
-            NSString *extension = @"sqlite";
-            
-            if ([_storeType isEqualToString:NSInMemoryStoreType]) {
-                extension = @"memory";
-            }else if ([_storeType isEqualToString:NSBinaryStoreType]) {
-                extension = @"binary";
-            }
-            
-            NSString *path_in_sandbox   = [[self.documentsDirectory stringByAppendingPathComponent:self.name] stringByAppendingPathExtension:extension];
+
+            NSString *path_in_sandbox   = [self.documentsDirectory stringByAppendingPathComponent:self.fileName];
             _persistentStorePath = [NSURL fileURLWithPath:path_in_sandbox];
             
         }

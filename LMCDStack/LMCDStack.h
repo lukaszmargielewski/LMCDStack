@@ -8,6 +8,8 @@
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 
+#import "NSManagedObjectContext+Queries.h"
+
 extern  NSString * _Nonnull const kLMCDStackDidSaveNotificationName;
 extern  NSString * _Nonnull const kLMCDStackDidChangeNotificationName;
 
@@ -18,20 +20,20 @@ extern  NSString * _Nonnull const kLMCDStackDidChangeNotificationName;
 @property (nonatomic, strong, readonly, nonnull)  NSManagedObjectContext          *mainThreadContext;
 @property (nonatomic, strong, readonly, nullable) NSManagedObjectContext          *backgroundThreadContext;
 
-@property (atomic, strong, readonly, nonnull) NSPersistentStoreCoordinator  *persistentStoreCoordinator;
-@property (atomic, strong, readonly, nonnull) NSURL *persistentStorePath;
+@property (nonatomic, strong, readonly, nonnull) NSPersistentStoreCoordinator  *persistentStoreCoordinator;
+@property (nonatomic, strong, readonly, nonnull) NSURL *persistentStorePath;
 
-@property (nonatomic, strong, readonly, nonnull) NSString *name;
+@property (nonatomic, strong, readonly, nonnull) NSString *fileName;
 @property (nonatomic, strong, readonly, nonnull) NSString *storeType;
 
 #pragma mark - Init:
 
 - (nonnull instancetype)init NS_UNAVAILABLE;
 
-- (nonnull instancetype)initWithName:(nonnull NSString *)name;
+- (nonnull instancetype)initWithFileName:(nonnull NSString *)fileName;
 
-- (nonnull instancetype)initWithName:(nonnull NSString *)name
-                           storeType:(nonnull NSString *)storeType NS_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFileName:(nonnull NSString *)fileName
+                               storeType:(nonnull NSString *)storeType NS_DESIGNATED_INITIALIZER;
 
 - (BOOL)saveIfNeededAndReset:(BOOL)reset;
 - (BOOL)deletePersistedStoreData;
