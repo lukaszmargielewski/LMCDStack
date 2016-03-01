@@ -14,23 +14,31 @@
 
 @protocol LMCDStackFetchResultsControllerDelegate <NSObject, UITableViewDataSource, UICollectionViewDataSource>
 
--(void)LMCDStackFetchResultsControllerDidFetchData:(LMCDStackFetchResultsController *)LMCDStackFetchResultsController;
+-(void)LMCDStackFetchResultsControllerDidFetchData:(LMCDStackFetchResultsController *)lmcdStackController;
 
--(void)LMCDStackFetchResultsController:(LMCDStackFetchResultsController *)LMCDStackFetchResultsController controllerWillChangeContent:(NSFetchedResultsController *)controller;
+-(void)LMCDStackFetchResultsController:(LMCDStackFetchResultsController *)lmcdStackController
+                     willChangeContent:(NSFetchedResultsController *)controller;
 
--(void)LMCDStackFetchResultsController:(LMCDStackFetchResultsController *)LMCDStackFetchResultsController controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath;
+-(void)LMCDStackFetchResultsController:(LMCDStackFetchResultsController *)lmcdStackController
+                            controller:(NSFetchedResultsController *)controller
+                       didChangeObject:(id)anObject
+                           atIndexPath:(NSIndexPath *)indexPath
+                         forChangeType:(NSFetchedResultsChangeType)type
+                          newIndexPath:(NSIndexPath *)newIndexPath;
 
--(void)LMCDStackFetchResultsController:(LMCDStackFetchResultsController *)LMCDStackFetchResultsController controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type;
+-(void)LMCDStackFetchResultsController:(LMCDStackFetchResultsController *)lmcdStackController
+                            controller:(NSFetchedResultsController *)controller
+                      didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+                               atIndex:(NSUInteger)sectionIndex
+                         forChangeType:(NSFetchedResultsChangeType)type;
 
--(void)LMCDStackFetchResultsController:(LMCDStackFetchResultsController *)LMCDStackFetchResultsController controllerDidChangeContent:(NSFetchedResultsController *)controller;
+-(void)LMCDStackFetchResultsController:(LMCDStackFetchResultsController *)lmcdStackController
+                      didChangeContent:(NSFetchedResultsController *)controller;
 
 @end
 
 
-@interface LMCDStackFetchResultsController : NSObject<NSFetchedResultsControllerDelegate, UITableViewDataSource, UICollectionViewDataSource>{
-
-        __block BOOL updated, downloaded, fetching, initial_fetch_attampted;
-}
+@interface LMCDStackFetchResultsController : NSObject<NSFetchedResultsControllerDelegate, UITableViewDataSource, UICollectionViewDataSource>
 
 @property (nonatomic, assign) id<LMCDStackFetchResultsControllerDelegate>delegate;
 
@@ -52,12 +60,13 @@
 
 -(void)fetchData;
 
+- (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initForEntityName:(NSString *)entityName
                           context:(NSManagedObjectContext *)context
                       sectionName:(NSString *)sectionName
                   sortDescriptors:(NSArray *)sortDescriptors
                         batchSize:(NSUInteger)batchSize
-                         delegate:(id<LMCDStackFetchResultsControllerDelegate>)delegate;
+                         delegate:(id<LMCDStackFetchResultsControllerDelegate>)delegate NS_DESIGNATED_INITIALIZER;
 
 + (instancetype)controllerForEntityName:(NSString *)entityName
                                 context:(NSManagedObjectContext *)context

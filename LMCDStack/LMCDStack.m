@@ -9,35 +9,43 @@
 #import "LMCDStack.h"
 #import "LMCDStackConfig.h"
 
+#ifdef DEBUG
+    #import "LMCDStack+Debug.h"
+#endif
+
+NSString * const kLMCDStackDidSaveNotificationName = @"kLMCDStackDidSaveNotificationName";
+NSString * const kLMCDStackDidChangeNotificationName = @"kLMCDStackDidChangeNotificationName";
+
 @interface LMCDStack ()
+
+@property (nonatomic, strong, readonly) NSString *cacheDirectory;
+@property (nonatomic, strong, readonly) NSString *documentsDirectory;
 
 @end
 
-@implementation LMCDStack{
+@implementation LMCDStack
 
-    CFRunLoopObserverRef _runLoopObserver;
-
-}
-
-@synthesize mainThreadContext = _mainThreadContext, managedObjectModel = _managedObjectModel;
+@synthesize mainThreadContext = _mainThreadContext;
+@synthesize managedObjectModel = _managedObjectModel;
 @synthesize backgroundThreadContext = _backgroundThreadContext;
 @synthesize name = _name;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize persistentStorePath = _persistentStorePath;
 @synthesize cacheDirectory = _cacheDirectory, documentsDirectory = _documentsDirectory;
 @synthesize storeType = _storeType;
-@synthesize version = _version;
 
 - (void)dealloc {
 	
     [self cleanBackgroundThreadContext];
-    CFRunLoopRemoveObserver(CFRunLoopGetMain(), _runLoopObserver, kCFRunLoopDefaultMode);
-    
+}
+
+- (instancetype)initWithName:(NSString *)name {
+
+    return [self initWithName:name storeType:NSSQLiteStoreType];
 }
 
 - (instancetype)initWithName:(NSString *)name
-                   storeType:(NSString *)storeType
-                     version:(NSString *)version{
+                   storeType:(NSString *)storeType {
     
     self = [super init];
     
@@ -45,29 +53,12 @@
 		
         _name = name;
         _storeType = storeType ? storeType : NSSQLiteStoreType;
-        _version = version;
-        
-        /*
-        __weak CDdb *weakSelf = self;
-        
-        _runLoopObserver = CFRunLoopObserverCreateWithHandler(NULL, (kCFRunLoopEntry | kCFRunLoopExit), YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity){
-            
-            [weakSelf runLoopEventWithObserver:observer activity:activity];
-            
-            });
-        
-        
-        CFRunLoopAddObserver(CFRunLoopGetMain(), _runLoopObserver, kCFRunLoopDefaultMode);
-        
-        */
-
 	}
 	return self;
 }
 
 
 #pragma mark - Core Data Stack for Main Thread:
-
 
 - (NSManagedObjectModel *)managedObjectModel {
     
@@ -89,8 +80,8 @@
         
         _mainThreadContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         [_mainThreadContext setPersistentStoreCoordinator:self.persistentStoreCoordinator];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainMocDidSave:) name:NSManagedObjectContextDidSaveNotification object:_mainThreadContext];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainMocDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:_mainThreadContext];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainContextDidSave:) name:NSManagedObjectContextDidSaveNotification object:_mainThreadContext];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainContextDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:_mainThreadContext];
     }
     return _mainThreadContext;
     
@@ -99,7 +90,8 @@
     
     return nil;
 }
-- (NSPersistentStoreCoordinator *)persistentStoreCoordinator{
+
+- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
     
     @synchronized(self) {
         
@@ -128,7 +120,7 @@
                 CDLog(@"error adding persistent store: %@", [error localizedDescription]);
                 CDLog(@"tryng to hanlde error by recreating (deleteing) database file with uncompatbl version...");
                 
-                [self deleteDatabaseFile];
+                [self deletePersistedStoreData];
                 
                 persistentStore = [_persistentStoreCoordinator addPersistentStoreWithType:_storeType configuration:nil URL:self.persistentStorePath options:options error:&error];
                 
@@ -143,61 +135,21 @@
     }
     
 }
-
-
 - (NSURL *)persistentStorePath {
     
     @synchronized(self){
         
         if (_persistentStorePath == nil) {
-            
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            
-            
+        
             NSString *extension = @"sqlite";
             
             if ([_storeType isEqualToString:NSInMemoryStoreType]) {
-                extension = @"memeory";
+                extension = @"memory";
             }else if ([_storeType isEqualToString:NSBinaryStoreType]) {
                 extension = @"binary";
             }
             
-            
             NSString *path_in_sandbox   = [[self.documentsDirectory stringByAppendingPathComponent:self.name] stringByAppendingPathExtension:extension];
-            
-            // Check if to delete database file in sandbox:
-            if ([fileManager fileExistsAtPath:path_in_sandbox]) {
-                
-                // *info = [[NSBundle mainBundle] infoDictionary];
-                NSString *defaults_key = [NSString stringWithFormat:@"DATABASE_VERSION_%@", self.name];
-                NSString *storedVersion = [[NSUserDefaults standardUserDefaults] valueForKey:defaults_key];
-                
-                NSString *actualVersion = _version;
-                
-                if (![storedVersion isEqualToString:actualVersion]) {
-                    
-                    CDLog(@"Database version differs (%@)!!!!! -> stored version: %@ bundle version: (%@) = delete database file...", defaults_key,  storedVersion, actualVersion);
-                    
-                    NSError *err = nil;
-                    // 1. Database main file:
-                    
-                    [fileManager removeItemAtPath:path_in_sandbox error:&err];
-                    
-                    if (err) {
-                        
-                        CDLog(@"Error deleting database file: %@", [err localizedDescription]);
-                        
-                    }else{
-                        
-                        CDLog(@"Database file removed successfully: %@", path_in_sandbox);
-                        
-                        [[NSUserDefaults standardUserDefaults] setValue:actualVersion forKey:defaults_key];
-                        [[NSUserDefaults standardUserDefaults] synchronize];
-                    }
-                    
-                }
-            }
-            
             _persistentStorePath = [NSURL fileURLWithPath:path_in_sandbox];
             
         }
@@ -206,34 +158,7 @@
     }
 }
 
-
-#pragma mark - Write Context:
-- (void)cleanBackgroundThreadContext{
-
-    if (_backgroundThreadContext) {
-    
-        [[NSNotificationCenter defaultCenter] removeObserver:_backgroundThreadContext];
-        _backgroundThreadContext = nil;
-    }
-    
-}
-- (NSManagedObjectContext *)backgroundThreadContext{
-    
-    if (_backgroundThreadContext)return _backgroundThreadContext;
-    
-            _backgroundThreadContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-            [_backgroundThreadContext setPersistentStoreCoordinator:self.persistentStoreCoordinator];
-            [_backgroundThreadContext setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
-            
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mwmocDidSave:) name:NSManagedObjectContextDidSaveNotification object:_backgroundThreadContext];
-            [_backgroundThreadContext setUndoManager:nil];
-            
-    
-        return _backgroundThreadContext;
-
-}
-
-- (BOOL)deleteDatabaseFile{
+- (BOOL)deletePersistedStoreData {
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
@@ -258,17 +183,39 @@
 }
 
 
-#pragma mark - Core Data stack MY / Multithreading support:
+#pragma mark - Background Context:
 
-
-- (void)mwmocDidSave:(NSNotification *)saveNotification {
-  
+- (NSManagedObjectContext *)backgroundThreadContext {
     
+    if (_backgroundThreadContext)return _backgroundThreadContext;
+    
+            _backgroundThreadContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+            [_backgroundThreadContext setPersistentStoreCoordinator:self.persistentStoreCoordinator];
+            [_backgroundThreadContext setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backgroundContextDidSave:) name:NSManagedObjectContextDidSaveNotification object:_backgroundThreadContext];
+            [_backgroundThreadContext setUndoManager:nil];
+    
+        return _backgroundThreadContext;
+}
+
+- (void)cleanBackgroundThreadContext {
+    
+    if (_backgroundThreadContext) {
+        
+        [[NSNotificationCenter defaultCenter] removeObserver:_backgroundThreadContext];
+        _backgroundThreadContext = nil;
+    }
+}
+
+#pragma mark - Multithreading support & merging with main thread context;:
+
+- (void)backgroundContextDidSave:(NSNotification *)saveNotification {
+  
     
     id saveInfo = [saveNotification userInfo];
     
-    
-#ifdef DEBUG
+
     
     NSMutableDictionary *dddd = [[NSMutableDictionary alloc] init];
     
@@ -277,6 +224,10 @@
     NSSet *updated = [saveInfo valueForKey:NSUpdatedObjectsKey];
     NSSet *refreshed = [saveInfo valueForKey:NSRefreshedObjectsKey];
     NSSet *invalidated = [saveInfo valueForKey:NSInvalidatedObjectsKey];
+  
+    BOOL anythingChanged = (inserted.count > 0 || deleted.count > 0 || updated.count > 0);
+    
+#ifdef DEBUG
     
     [self addStatsForSet:inserted       toDict:dddd operationKey:@"inserted"];
     [self addStatsForSet:deleted        toDict:dddd operationKey:@"deleted"];
@@ -284,10 +235,9 @@
     [self addStatsForSet:refreshed      toDict:dddd operationKey:@"refreshed"];
     [self addStatsForSet:invalidated    toDict:dddd operationKey:@"invalidated"];
     
-    BOOL anythingChanged = (inserted.count > 0 || deleted.count > 0 || updated.count > 0);
-    
     CDLog(@"CDdb - mWmoc didsave - merging changes stats: %@", dddd);
 #endif
+    
     
     if (anythingChanged) {
         
@@ -299,206 +249,28 @@
             CDLog(@"    CDdb - mWmoc didsave - merged changes with main moc");
         });
     }
-    
-
-    
 }
-- (void)mainMocDidSave:(NSNotification *)saveNotification {
+
+#pragma mark - Save & Changed notifications support:
+
+- (void)mainContextDidSave:(NSNotification *)saveNotification {
     
     
     //CDLog(@"CDdb - main moc didSave - NO merging with anything: %@", saveNotification);
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:DATABASE_SAVED object:saveNotification];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLMCDStackDidSaveNotificationName object:saveNotification];
 }
-- (void)mainMocDidChange:(NSNotification *)saveNotification {
+- (void)mainContextDidChange:(NSNotification *)saveNotification {
     
     
     //CDLog(@"CDdb - main moc did CHANGED: %@", saveNotification);
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:DATABASE_CONTENT_CHANGED object:self userInfo:[saveNotification userInfo]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLMCDStackDidChangeNotificationName object:self userInfo:[saveNotification userInfo]];
     
 }
 
 
-#pragma mark - Save & Change notification Analytics:
-
-+ (NSDictionary *)changesFromChangeNotification:(NSNotification *)notification forObjectOfClass:(Class)className{
-    
-    
-    NSMutableDictionary *changes = [NSMutableDictionary dictionaryWithCapacity:3];
-    BOOL found_anything = NO;
-    
-    id saveInfo = [notification userInfo];
-    
-    NSSet *inserted = [saveInfo valueForKey:NSInsertedObjectsKey];
-    NSSet *deleted = [saveInfo valueForKey:NSDeletedObjectsKey];
-    NSSet *updated = [saveInfo valueForKey:NSUpdatedObjectsKey];
-    NSSet *refreshed = [saveInfo valueForKey:NSRefreshedObjectsKey];
-    
-    NSMutableSet *items = nil;
-    
-    for (id object in inserted) {
-        if ([object isKindOfClass:className]) {
-            
-            
-            if (![changes valueForKey:NSInsertedObjectsKey]) {
-                items = [NSMutableSet setWithCapacity:inserted.count];
-                changes[NSInsertedObjectsKey] = items;
-            }
-            found_anything = YES;
-            [items addObject:object];
-        }
-    }
-    for (id object in deleted) {
-        if ([object isKindOfClass:className]) {
-            if (![changes valueForKey:NSDeletedObjectsKey]) {
-                items = [NSMutableSet setWithCapacity:inserted.count];
-                changes[NSDeletedObjectsKey] = items;
-            }
-            found_anything = YES;
-            [items addObject:object];
-        }
-    }
-    for (id object in updated) {
-        if ([object isKindOfClass:className]) {
-            
-            if (![changes valueForKey:NSUpdatedObjectsKey]) {
-                items = [NSMutableSet setWithCapacity:inserted.count];
-                changes[NSUpdatedObjectsKey] = items;
-            }
-            found_anything = YES;
-            [items addObject:object];
-        }
-    }
-    
-    for (id object in refreshed) {
-        if ([object isKindOfClass:className]) {
-            
-            if (![changes valueForKey:NSRefreshedObjectsKey]) {
-                items = [NSMutableSet setWithCapacity:inserted.count];
-                changes[NSRefreshedObjectsKey] = items;
-            }
-            found_anything = YES;
-            [items addObject:object];
-        }
-    }
-    
-    return (found_anything) ? changes : nil;
-}
-+ (BOOL)saveNotification:(NSNotification *)notification containsObjectOfClasses:(NSArray *)classNamesArray{
-
-    for (Class className in classNamesArray) {
-        BOOL contains = [self saveNotification:notification containsObjectOfClass:className];
-        if (contains) {
-            return YES;
-        }
-    }
-    
-    return NO;
-}
-+ (BOOL)saveNotification:(NSNotification *)notification containsObjectOfClass:(Class)className{
-    
-    
-    id saveInfo = [notification userInfo];
-    
-    id inserted = [saveInfo valueForKey:NSInsertedObjectsKey];
-    id deleted = [saveInfo valueForKey:NSDeletedObjectsKey];
-    id updated = [saveInfo valueForKey:NSUpdatedObjectsKey];
-    id refreshed = [saveInfo valueForKey:NSRefreshedObjectsKey];
-    
-    for (id object in inserted) {
-        if ([object isKindOfClass:className]) {
-            return YES;
-        }
-    }
-    for (id object in deleted) {
-        if ([object isKindOfClass:className]) {
-            return YES;
-        }
-    }
-    for (id object in updated) {
-        if ([object isKindOfClass:className]) {
-            return YES;
-        }
-    }
-    
-    for (id object in refreshed) {
-        if ([object isKindOfClass:className]) {
-            return YES;
-        }
-    }
-    return NO;
-}
-
-
-#pragma mark - Directories:
-
-- (NSString *)cacheDirectory {
-	
-	if (!_cacheDirectory) {
-		
-		_cacheDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-	}
-	
-	return _cacheDirectory;
-}
-- (NSString *)documentsDirectory {
-	
-	if (!_documentsDirectory) {
-		
-		_documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-	}
-	
-	return _documentsDirectory;
-}
-
-
-#pragma mark - Debug:
-
-- (void)addStatsForSet:(NSSet *)set toDict:(NSMutableDictionary *)statsDict operationKey:(NSString *)operationKey{
-    
-    for (NSManagedObject *mob in set) {
-        
-        NSString *className = NSStringFromClass([mob class]);
-        
-        
-        NSMutableDictionary *classDict = statsDict[className];
-        if (!classDict) {
-            classDict = [[NSMutableDictionary alloc] initWithCapacity:5];
-            statsDict[className] = classDict;
-        }
-        
-        NSNumber *operationCount = classDict[operationKey];
-        
-        if (!operationCount) {
-            operationCount = @(1);
-        }else{
-            
-            operationCount = @([operationCount integerValue] + 1);
-        }
-        
-        classDict[operationKey] = operationCount;
-        
-        // totals:
-        NSMutableDictionary *totalsDict = statsDict[@"TOTALS"];
-        if (!totalsDict) {
-            totalsDict = [[NSMutableDictionary alloc] initWithCapacity:5];
-            statsDict[@"TOTALS"] = totalsDict;
-            
-        }
-        operationCount = totalsDict[operationKey];
-        
-        if (!operationCount) {
-            operationCount = @(1);
-        }else{
-            
-            operationCount = @([operationCount integerValue] + 1);
-        }
-        
-        totalsDict[operationKey] = operationCount;
-    }
-    
-}
+#pragma mark - Save:
 
 - (BOOL)saveIfNeededAndReset:(BOOL)reset{
     
@@ -527,7 +299,7 @@
         }
         
         if (reset) {
-        
+            
             [_mainThreadContext reset];
         }
         
@@ -537,4 +309,27 @@
     
     return NO;
 }
+
+
+#pragma mark - Directories:
+
+- (NSString *)cacheDirectory {
+	
+	if (!_cacheDirectory) {
+		
+		_cacheDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
+	}
+	
+	return _cacheDirectory;
+}
+- (NSString *)documentsDirectory {
+	
+	if (!_documentsDirectory) {
+		
+		_documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+	}
+	
+	return _documentsDirectory;
+}
+
 @end

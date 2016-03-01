@@ -19,6 +19,8 @@
     
     NSMutableArray *_objectChanges;
     NSMutableArray *_sectionChanges;
+    
+    __block BOOL updated, downloaded, fetching, initial_fetch_attampted;
 }
 
 @synthesize fetchedResultsController = _fetchedResultsController;
@@ -29,13 +31,6 @@
 @synthesize sortDescriptors = _sortDescriptors;
 
 #pragma mark - Init & setup:
-
-
--(id)init{
-
-    NSAssert(NO, @"Direct init not allowed - use initForEntityName:.... instead");
-    return nil;
-}
 
 -(void)setCollectionView:(UICollectionView *)collectionView{
 
@@ -248,8 +243,6 @@
 }
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)table {
     
-    return nil;
-    
     NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:[self.fetchedResultsController.sections count]];
     for (id <NSFetchedResultsSectionInfo> sectionInfo in [self.fetchedResultsController sections]) {
         NSString *sectionTitle = [sectionInfo name];
@@ -291,20 +284,22 @@
 #pragma mark - Fetch controller delegate:
 
 
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+- (void)willChangeContent:(NSFetchedResultsController *)controller {
 
 	// The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     UITableView *tableView = self.tableView;
 	if(tableView)[tableView beginUpdates];
     
-    if (_delegate && [_delegate respondsToSelector:@selector(LMCDStackFetchResultsController:controllerWillChangeContent:)]) {
+    if (_delegate && [_delegate respondsToSelector:@selector(LMCDStackFetchResultsController:willChangeContent:)]) {
         
-        [_delegate LMCDStackFetchResultsController:self controllerWillChangeContent:self.fetchedResultsController];
+        [_delegate LMCDStackFetchResultsController:self willChangeContent:self.fetchedResultsController];
     }
     
 }
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
-           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type{
+- (void)controller:(NSFetchedResultsController *)controller
+  didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex
+     forChangeType:(NSFetchedResultsChangeType)type{
     
     NSMutableDictionary *change = [NSMutableDictionary new];
     
@@ -323,13 +318,25 @@
             if(tableView)[tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
         }
             break;
+        case NSFetchedResultsChangeMove:
+        {
+            // Nothing to do here (?)....
+        }
+            break;
+        case NSFetchedResultsChangeUpdate:
+        {
+            // Nothing to do here (?)....
+        }
+            break;
     }
     
     [_sectionChanges addObject:change];
 }
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+- (void)controller:(NSFetchedResultsController *)controller
+   didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath
+     forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath{
     
     NSMutableDictionary *change = [NSMutableDictionary new];
@@ -371,7 +378,7 @@
     [_objectChanges addObject:change];
 }
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller{
+- (void)didChangeContent:(NSFetchedResultsController *)controller{
     
     UITableView *tableView = self.tableView;
     if(tableView)[tableView endUpdates];
@@ -397,6 +404,11 @@
                                 break;
                             case NSFetchedResultsChangeUpdate:
                                 [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:[obj unsignedIntegerValue]]];
+                                break;
+                            case NSFetchedResultsChangeMove:
+                            {
+                                // Nothing to do here....
+                            }
                                 break;
                         }
                     }];
@@ -451,9 +463,9 @@
     [_sectionChanges removeAllObjects];
     [_objectChanges removeAllObjects];
     
-    if (_delegate && [_delegate respondsToSelector:@selector(LMCDStackFetchResultsController:controllerDidChangeContent:)]) {
+    if (_delegate && [_delegate respondsToSelector:@selector(LMCDStackFetchResultsController:didChangeContent:)]) {
 
-        [_delegate LMCDStackFetchResultsController:self controllerDidChangeContent:self.fetchedResultsController];
+        [_delegate LMCDStackFetchResultsController:self didChangeContent:self.fetchedResultsController];
     }
 }
 

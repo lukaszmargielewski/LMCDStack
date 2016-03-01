@@ -10,51 +10,36 @@
 
 #import "NSManagedObjectContext+Queries.h"
 
-#define DATABASE_SAVED @"CoreDataSavedWithChanges"
-#define DATABASE_CONTENT_CHANGED @"CoreDataChangedInMainMoc"
+extern  NSString * _Nonnull const kLMCDStackDidSaveNotificationName;
+extern  NSString * _Nonnull const kLMCDStackDidChangeNotificationName;
 
 @interface LMCDStack : NSObject{
 
 
 }
 
-@property (nonatomic, strong, readonly) NSString *cacheDirectory, *documentsDirectory;
-
-
 #pragma mark - Core Data Stack:
 
-@property (nonatomic, strong, readonly) NSManagedObjectModel            *managedObjectModel;
-@property (nonatomic, strong, readonly) NSManagedObjectContext          *mainThreadContext;
-@property (nonatomic, strong, readonly) NSManagedObjectContext          *backgroundThreadContext;
+@property (nonatomic, strong, readonly, nonnull)  NSManagedObjectModel            *managedObjectModel;
+@property (nonatomic, strong, readonly, nonnull)  NSManagedObjectContext          *mainThreadContext;
+@property (nonatomic, strong, readonly, nullable) NSManagedObjectContext          *backgroundThreadContext;
 
-@property (atomic, strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-@property (atomic, strong, readonly) NSURL *persistentStorePath;
+@property (atomic, strong, readonly, nonnull) NSPersistentStoreCoordinator  *persistentStoreCoordinator;
+@property (atomic, strong, readonly, nonnull) NSURL *persistentStorePath;
 
-@property (nonatomic, strong, readonly) NSString *name;
-@property (nonatomic, strong, readonly) NSString *version;
-@property (nonatomic, strong, readonly) NSString *storeType;
+@property (nonatomic, strong, readonly, nonnull) NSString *name;
+@property (nonatomic, strong, readonly, nonnull) NSString *storeType;
 
 #pragma mark - Init:
 
-- (instancetype)initWithName:(NSString *)name
-                   storeType:(NSString *)storeType
-                     version:(NSString *)version;
+- (nonnull instancetype)init NS_UNAVAILABLE;
+
+- (nonnull instancetype)initWithName:(nonnull NSString *)name;
+
+- (nonnull instancetype)initWithName:(nonnull NSString *)name
+                   storeType:(nonnull NSString *)storeType NS_DESIGNATED_INITIALIZER;
 
 - (BOOL)saveIfNeededAndReset:(BOOL)reset;
-- (BOOL)deleteDatabaseFile;
-
-
-#pragma mark - Write Context Cleaning:
-
-- (void)cleanBackgroundThreadContext;
-
-
-#pragma mark - Save & Change notification Analytics:
-
-+ (NSDictionary *)changesFromChangeNotification:(NSNotification *)notification
-                               forObjectOfClass:(Class)className;
-
-+ (BOOL)saveNotification:(NSNotification *)notification containsObjectOfClass:(Class)className;
-+ (BOOL)saveNotification:(NSNotification *)notification containsObjectOfClasses:(NSArray *)classNamesArray;
+- (BOOL)deletePersistedStoreData;
 
 @end

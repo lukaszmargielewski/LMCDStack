@@ -9,15 +9,9 @@
 #ifndef LMCDDBConfig_config_h
 #define LMCDDBConfig_config_h
 
-#if  DEBUG
-    #define DEBUG_SYNC_CONDITIONS if([entityName isEqualToString:@"EventCategory"])
-#else
-    #define DEBUG_SYNC_CONDITIONS //
-#endif
-
 
 //#define DEBUG_CDDBSTACK 1
-// Activate debug methods ONLY IN GLOBAL DEBUG RELEASES!!!
+// Activate debug methods ONLY IN DEBUG RELEASES!!!
 
 #if  DEBUG && DEBUG_CDDBSTACK
 #define CDLog(format, ...) NSLog((@"%s [Line %d]: " format), __PRETTY_FUNCTION__, __LINE__,## __VA_ARGS__)

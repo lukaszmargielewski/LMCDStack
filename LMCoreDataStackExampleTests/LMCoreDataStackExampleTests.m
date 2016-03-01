@@ -23,8 +23,8 @@
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    self.cdStack = [[LMCDStack alloc] initWithName:@"test" storeType:NSSQLiteStoreType version:@"1"];
-    [self.cdStack deleteDatabaseFile];
+    self.cdStack = [[LMCDStack alloc] initWithName:@"test"];
+    [self.cdStack deletePersistedStoreData];
 }
 
 - (void)tearDown {
