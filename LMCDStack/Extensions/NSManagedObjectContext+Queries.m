@@ -6,32 +6,12 @@
 //
 //
 
-#import "LMCDStackConfig.h"
+#import "LMCDStackCommon.h"
 #import "NSManagedObjectContext+Queries.h"
 
 #import <CoreData/CoreData.h>
 
-@implementation NSManagedObjectContext(queries)
-
-
-- (NSManagedObject *) insertNewEntityWithName:(NSString *)name{
-    NSManagedObject *object = nil;
-    @try {
-        object = [NSEntityDescription insertNewObjectForEntityForName:name inManagedObjectContext:self];
-    }
-    @catch (NSException *exception) {
-        
-    }
-    @finally {
-        
-    }
-    
-    return object;
-}
-- (NSManagedObject *)insertNewEntity:(Class)entityClass {
-
-    return [self insertNewEntityWithName:[NSManagedObjectContext entityNameForClass:entityClass]];
-}
+@implementation NSManagedObjectContext(Queries)
 
 
 #pragma mark - Delete:

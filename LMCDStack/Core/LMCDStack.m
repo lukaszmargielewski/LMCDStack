@@ -7,7 +7,6 @@
 //
 
 #import "LMCDStack.h"
-#import "LMCDStackConfig.h"
 
 #ifdef DEBUG
     #import "LMCDStack+Debug.h"

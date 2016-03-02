@@ -8,7 +8,9 @@
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 
+#import "LMCDStackCommon.h"
 #import "NSManagedObjectContext+Queries.h"
+#import "NSManagedObjectContext+Insert.h"
 
 extern  NSString * _Nonnull const kLMCDStackDidSaveNotificationName;
 extern  NSString * _Nonnull const kLMCDStackDidChangeNotificationName;

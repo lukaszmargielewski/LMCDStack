@@ -8,11 +8,7 @@
 
 #import <CoreData/CoreData.h>
 
-
-@interface NSManagedObjectContext(queries)
-
-- (NSManagedObject *)insertNewEntityWithName:(NSString *)name;
-- (NSManagedObject *)insertNewEntity:(Class)entityClass;
+@interface NSManagedObjectContext(Queries)
 
 - (void)deleteManagedObjectsFromObjectContainingObjectID:(id)toDelete;
 - (void)deleteManagedObjectsFromArrayContainingObjectIDs:(NSArray *)toDelete;
