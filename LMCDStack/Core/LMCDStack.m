@@ -40,6 +40,17 @@ NSString * const kLMCDStackDidChangeNotificationName = @"kLMCDStackDidChangeNoti
     [self cleanBackgroundThreadContext];
 }
 
++ (nonnull instancetype)stackWithFileName:(nonnull NSString *)fileName {
+
+    return [[LMCDStack alloc] initWithFileName:fileName];
+}
+
++ (nonnull instancetype)stackWithFileName:(nonnull NSString *)fileName
+                                storeType:(nonnull NSString *)storeType {
+
+    return [[LMCDStack alloc] initWithFileName:fileName storeType:storeType];
+}
+
 - (instancetype)initWithFileName:(NSString *)fileName {
 
     return [self initWithFileName:fileName storeType:NSSQLiteStoreType];

@@ -37,6 +37,11 @@ extern  NSString * _Nonnull const kLMCDStackDidChangeNotificationName;
 - (nonnull instancetype)initWithFileName:(nonnull NSString *)fileName
                                storeType:(nonnull NSString *)storeType NS_DESIGNATED_INITIALIZER;
 
++ (nonnull instancetype)stackWithFileName:(nonnull NSString *)fileName;
+
++ (nonnull instancetype)stackWithFileName:(nonnull NSString *)fileName
+                               storeType:(nonnull NSString *)storeType;
+
 - (BOOL)saveIfNeededAndReset:(BOOL)reset;
 - (BOOL)deletePersistedStoreData;
 
