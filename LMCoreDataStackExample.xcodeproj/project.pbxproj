@@ -25,6 +25,7 @@
 		A11790291BC315CA0029B8E1 /* Entity+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = A11790251BC315CA0029B8E1 /* Entity+CoreDataProperties.m */; };
 		A117902A1BC315CA0029B8E1 /* Entity.m in Sources */ = {isa = PBXBuildFile; fileRef = A11790271BC315CA0029B8E1 /* Entity.m */; };
 		A117902B1BC315CA0029B8E1 /* Entity.m in Sources */ = {isa = PBXBuildFile; fileRef = A11790271BC315CA0029B8E1 /* Entity.m */; };
+		A1D336741C87A61D00377D06 /* NSManagedObjectContext+Insert.m in Sources */ = {isa = PBXBuildFile; fileRef = A1D336731C87A61D00377D06 /* NSManagedObjectContext+Insert.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,7 +43,6 @@
 		A113D3E21C86476400351601 /* LMCDStackFetchResultsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMCDStackFetchResultsController.m; sourceTree = "<group>"; };
 		A113D3E41C86476400351601 /* LMCDStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMCDStack.h; sourceTree = "<group>"; };
 		A113D3E51C86476400351601 /* LMCDStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMCDStack.m; sourceTree = "<group>"; };
-		A113D3E61C86476400351601 /* LMCDStackConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMCDStackConfig.h; sourceTree = "<group>"; };
 		A113D3E81C86476400351601 /* LMCDStack+Debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LMCDStack+Debug.h"; sourceTree = "<group>"; };
 		A113D3E91C86476400351601 /* LMCDStack+Debug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LMCDStack+Debug.m"; sourceTree = "<group>"; };
 		A113D3EA1C86476400351601 /* NSManagedObjectContext+Queries.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+Queries.h"; sourceTree = "<group>"; };
@@ -70,6 +70,9 @@
 		A11790261BC315CA0029B8E1 /* Entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
 		A11790271BC315CA0029B8E1 /* Entity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Entity.m; sourceTree = "<group>"; };
 		A1CCCAB61BC483A4002EC6A6 /* LMCDStack.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = LMCDStack.podspec; sourceTree = "<group>"; };
+		A1D336711C87A61200377D06 /* LMCDStackCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMCDStackCommon.h; sourceTree = "<group>"; };
+		A1D336721C87A61D00377D06 /* NSManagedObjectContext+Insert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+Insert.h"; sourceTree = "<group>"; };
+		A1D336731C87A61D00377D06 /* NSManagedObjectContext+Insert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+Insert.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,9 +115,9 @@
 		A113D3E31C86476400351601 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				A1D336711C87A61200377D06 /* LMCDStackCommon.h */,
 				A113D3E41C86476400351601 /* LMCDStack.h */,
 				A113D3E51C86476400351601 /* LMCDStack.m */,
-				A113D3E61C86476400351601 /* LMCDStackConfig.h */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -124,6 +127,8 @@
 			children = (
 				A113D3E81C86476400351601 /* LMCDStack+Debug.h */,
 				A113D3E91C86476400351601 /* LMCDStack+Debug.m */,
+				A1D336721C87A61D00377D06 /* NSManagedObjectContext+Insert.h */,
+				A1D336731C87A61D00377D06 /* NSManagedObjectContext+Insert.m */,
 				A113D3EA1C86476400351601 /* NSManagedObjectContext+Queries.h */,
 				A113D3EB1C86476400351601 /* NSManagedObjectContext+Queries.m */,
 				A113D3EC1C86476400351601 /* NSNotification+LMCDStack.h */,
@@ -300,6 +305,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1D336741C87A61D00377D06 /* NSManagedObjectContext+Insert.m in Sources */,
 				A113D3F41C86476400351601 /* NSNotification+LMCDStack.m in Sources */,
 				A117902A1BC315CA0029B8E1 /* Entity.m in Sources */,
 				A1178FF31BC2FC4B0029B8E1 /* ViewController.m in Sources */,

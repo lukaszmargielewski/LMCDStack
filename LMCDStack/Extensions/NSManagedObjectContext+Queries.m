@@ -25,11 +25,10 @@
             
             NSManagedObject *objectToDelete = [self existingObjectWithID:objectID error:&error];
             if (objectToDelete != nil) {
-                //CDSyncLog(@"deleting: %@", objectToDelete);
                 [self deleteObject:objectToDelete];
             }else{
                 
-                //CDSyncLog(@"Error gettin object with ID: %@\nError: %@", objectID, error);
+                CDLog(@"Error gettin object with ID: %@\nError: %@", objectID, error);
             }
         }
     
@@ -45,11 +44,10 @@
             
             NSManagedObject *objectToDelete = [self existingObjectWithID:objectID error:&error];
             if (objectToDelete != nil) {
-                //CDSyncLog(@"deleting: %@", objectToDelete);
                 [self deleteObject:objectToDelete];
             }else{
                 
-                //CDSyncLog(@"Error gettin object with ID: %@\nError: %@", objectID, error);
+                CDLog(@"Error getting object with ID: %@\nError: %@", objectID, error);
             }
             
             
@@ -95,7 +93,7 @@
     
     
     if(error){
-        CDSyncLog(@"Error during query: %@ database:%@", [error localizedDescription], p);
+        CDLog(@"Error during query: %@ database:%@", [error localizedDescription], p);
         error = nil;
     }
     
