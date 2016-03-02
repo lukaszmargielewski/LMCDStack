@@ -28,7 +28,10 @@
     
     return object;
 }
+- (NSManagedObject *)insertNewEntity:(Class)entityClass {
 
+    return [self insertNewEntityWithName:[NSManagedObjectContext entityNameForClass:entityClass]];
+}
 
 
 #pragma mark - Delete:
@@ -96,7 +99,9 @@
 }
 
 
-- (NSManagedObject *)getEntity:(NSString *)entityName withValue:(id)value forKey:(NSString *)key{
+- (NSManagedObject *)getEntityWithName:(NSString *)entityName
+                             withValue:(id)value
+                                forKey:(NSString *)key {
     
     NSError *error = nil;
     NSFetchRequest *request = [NSManagedObjectContext request1Result];
@@ -119,6 +124,15 @@
     
 }
 
+- (NSManagedObject *)getEntity:(Class)entityClass
+                     withValue:(id)value
+                        forKey:(NSString *)key {
+
+    return [self getEntityWithName:[NSManagedObjectContext entityNameForClass:entityClass]
+                         withValue:value
+                            forKey:key];
+}
+
 - (NSArray *)performPredicate:(NSPredicate *)predicate
                    entityName:(NSString *)entityName
                   sortedByKey:(NSString *)key
@@ -127,7 +141,7 @@
                withProperties:(BOOL)includeProperties
                     properies:(NSArray *)propertiesToFetch
                    resultType:(NSFetchRequestResultType)resultType
-                    batchSize:(NSUInteger)batchSize{
+                    batchSize:(NSUInteger)batchSize {
     
     NSAssert(entityName != nil, @"entityName must NO be nil");
     
@@ -196,11 +210,36 @@
     
 }
 
+- (NSArray *)performPredicate:(NSPredicate *)predicate
+                       entity:(Class)entityClass
+                  sortedByKey:(NSString *)key
+                     asceding:(BOOL)asceding
+                 withObjectID:(BOOL)includeObjectID
+               withProperties:(BOOL)includeProperties
+                    properies:(NSArray *)propertiesToFetch
+                   resultType:(NSFetchRequestResultType)resultType
+                    batchSize:(NSUInteger)batchSize {
 
+    return [self performPredicate:predicate
+                       entityName:[NSManagedObjectContext entityNameForClass:entityClass]
+                      sortedByKey:key asceding:asceding
+                     withObjectID:includeObjectID
+                   withProperties:includeProperties
+                        properies:propertiesToFetch
+                       resultType:resultType
+                        batchSize:batchSize];
+    
 
+}
+
++ (NSString *)entityNameForClass:(Class)class {
+
+    return NSStringFromClass(class);
+}
 #pragma mark - Calculation helpers:
 
-- (NSUInteger)countEntitities:(NSString *)entityName predicate:(NSPredicate *)predicate{
+- (NSUInteger)countEntitiesWithName:(NSString *)entityName
+                          predicate:(NSPredicate *)predicate{
     
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *es = [NSEntityDescription entityForName:entityName inManagedObjectContext:self];
@@ -221,19 +260,46 @@
     
 }
 
+- (NSUInteger)countEntitities:(Class)entityClass
+                    predicate:(NSPredicate *)predicate {
+
+    return [self countEntitiesWithName:[NSManagedObjectContext entityNameForClass:entityClass] predicate:predicate];
+    
+}
+
 - (NSNumber *)minimumValueForKey:(NSString *)idKey
                       entityName:(NSString *)entityName
                        predicate:(NSPredicate *)predicate{
     
     return [self valueForKey:idKey function:@"min:" entityName:entityName predicate:predicate];
 }
+
+- (NSNumber *)minimumValueForKey:(NSString *)idKey
+                          entity:(Class)entityClass
+                       predicate:(NSPredicate *)predicate {
+
+    return [self minimumValueForKey:idKey
+                         entityName:[NSManagedObjectContext entityNameForClass:entityClass]
+                          predicate:predicate];
+    
+}
+
 - (NSNumber *)maximumValueForKey:(NSString *)idKey
                       entityName:(NSString *)entityName
-                       predicate:(NSPredicate *)predicate{
+                       predicate:(NSPredicate *)predicate {
 
 
     return [self valueForKey:idKey function:@"max:" entityName:entityName predicate:predicate];
     
+}
+
+- (NSNumber *)maximumValueForKey:(NSString *)idKey
+                          entity:(Class)entityClass
+                       predicate:(NSPredicate *)predicate {
+
+    return [self maximumValueForKey:idKey
+                         entityName:[NSManagedObjectContext entityNameForClass:entityClass]
+                          predicate:predicate];
 }
 
 - (NSNumber *)valueForKey:(NSString *)idKey
