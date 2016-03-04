@@ -149,9 +149,6 @@
 -(void)performFetch{
 
     NSError *error = nil;
-    NSTimeInterval ts = CACurrentMediaTime();
-    DLog(@"================FETCHING start ===");
-    DLog(@"== %@ Fetching %@ predicate: %@",NSStringFromClass([self class]), self.fetchRequest.entityName, self.fetchRequest.predicate);
     
     [self prepeareFetchRequst];
     
@@ -169,14 +166,6 @@
     @finally {
         
     }
-    
-    
-    NSTimeInterval te = CACurrentMediaTime();
-    DLog(@"Fetch time: %.4f  with predicate: %@", te - ts, self.predicate);
-    NSArray *fetchResults = [self.fetchedResultsController fetchedObjects];
-    int count = [fetchResults count];
-    DLog(@"Fetch results count: %i", count);
-    DLog(@"================FETCHING end   ===");
     if (!initial_fetch_attampted)initial_fetch_attampted = YES;
     fetching = NO;
     
@@ -238,7 +227,6 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     NSString *sectionTitle = [sectionInfo name];
-    DLog(@"Section %i title: %@", section, sectionTitle);
     return sectionTitle;
 }
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)table {
