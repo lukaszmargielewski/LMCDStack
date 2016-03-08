@@ -24,11 +24,7 @@
 }
 
 @synthesize fetchedResultsController = _fetchedResultsController;
-@synthesize fetchRequest = _fetchRequest;
-@synthesize entityName = _entityName;
-@synthesize sectionName = _sectionName;
-@synthesize context = _context;
-@synthesize sortDescriptors = _sortDescriptors;
+
 
 #pragma mark - Init & setup:
 
@@ -46,28 +42,35 @@
 #pragma mark - Fetch Results Controller:
 
 
-+ (instancetype)controllerForEntityName:(NSString *)entityName
-                                context:(NSManagedObjectContext *)context
-                            sectionName:(NSString *)sectionName
-                        sortDescriptors:(NSArray *)sortDescriptors
-                              batchSize:(NSUInteger)batchSize
-                               delegate:(id<LMCDStackFetchResultsControllerDelegate>)delegate{
++ (instancetype)controllerForEntity:(Class)entityClass
+                          predicate:(NSPredicate *)predicate
+                            context:(NSManagedObjectContext *)context
+                        sectionName:(NSString *)sectionName
+                          cacheName:(NSString *)cacheName
+                    sortDescriptors:(NSArray<LMCDStackSort *> *)sortDescriptors
+                          batchSize:(NSUInteger)batchSize
+                           delegate:(id<LMCDStackFetchResultsControllerDelegate>)delegate {
 
-    LMCDStackFetchResultsController *ccc = [[LMCDStackFetchResultsController alloc] initForEntityName:entityName
-                                                                                              context:context
-                                                                                          sectionName:sectionName
-                                                                                      sortDescriptors:sortDescriptors
-                                                                                            batchSize:batchSize
-                                                                                             delegate:delegate];
+    LMCDStackFetchResultsController *ccc = [[LMCDStackFetchResultsController alloc]
+                                            initForEntity:entityClass
+                                            predicate:predicate
+                                            context:context
+                                            sectionName:sectionName
+                                            cacheName:cacheName
+                                            sortDescriptors:sortDescriptors
+                                            batchSize:batchSize
+                                            delegate:delegate];
     return ccc;
 }
 
-- (instancetype)initForEntityName:(NSString *)entityName
-                          context:(NSManagedObjectContext *)context
-                      sectionName:(NSString *)sectionName
-                  sortDescriptors:(NSArray *)sortDescriptors
-                        batchSize:(NSUInteger)batchSize
-                         delegate:(id<LMCDStackFetchResultsControllerDelegate>)delegate{
+- (instancetype)initForEntity:(Class)entityClass
+                    predicate:(NSPredicate *)predicate
+                      context:(NSManagedObjectContext *)context
+                  sectionName:(NSString *)sectionName
+                    cacheName:(NSString *)cacheName
+              sortDescriptors:(NSArray<LMCDStackSort *> *)sortDescriptors
+                    batchSize:(NSUInteger)batchSize
+                     delegate:(id<LMCDStackFetchResultsControllerDelegate>)delegate {
 
     
     self = [super init];
@@ -78,55 +81,29 @@
         _objectChanges  = [NSMutableArray array];
         _sectionChanges = [NSMutableArray array];
         
-        _entityName     = entityName;
-        _context        = context;
-        _sectionName    = sectionName;
-        _sortDescriptors = sortDescriptors;
-        _batchSize      = batchSize;
+        _fetchedResultsController = [NSFetchedResultsController controllerForEntity:entityClass
+                                                                          predicate:predicate
+                                                                            context:context
+                                                                        sectionName:sectionName
+                                                                          cacheName:cacheName
+                                                                    sortDescriptors:sortDescriptors
+                                                                          batchSize:batchSize
+                                                                           delegate:self];
+        
         _delegate       = delegate;
         
     }
     
     return self;
-    
 }
-
--(NSFetchRequest *)fetchRequest{
-
-    if (!_fetchRequest) {
-
-        NSEntityDescription *entity = [NSEntityDescription entityForName:self.entityName inManagedObjectContext:self.context];
-        
-        _fetchRequest = [[NSFetchRequest alloc] init];
-
-        if (_sortDescriptors && _sortDescriptors.count) {
-            _fetchRequest.sortDescriptors = _sortDescriptors;
-        }
-        [_fetchRequest setPredicate:self.predicate]; // No predicate means all antries
-        [_fetchRequest setEntity:entity];
-        [_fetchRequest setFetchBatchSize:_batchSize];
-    }
-    
-    return _fetchRequest;
-}
-- (NSFetchedResultsController *)fetchedResultsController {
-    
-    if (_fetchedResultsController == nil) {
-        
-        _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest managedObjectContext:self.context sectionNameKeyPath:_sectionName cacheName:self.name];
-        _fetchedResultsController.delegate = self;
-    }
-    return _fetchedResultsController;
-}
-
 
 #pragma mark - Fetching:
 
--(void)prepeareFetchRequst{
+-(void)prepeareFetchRequst {
     
 
 }
--(void)didFetchData{
+-(void)didFetchData {
     
     
     if (self.collectionView) {
@@ -146,7 +123,7 @@
         
     }
 }
--(void)performFetch{
+-(void)performFetch {
 
     NSError *error = nil;
     
@@ -171,7 +148,7 @@
     
     [self didFetchData];
 }
--(void)fetchData{
+-(void)fetchData {
     
     if (fetching)return;
     fetching = YES;
@@ -201,7 +178,7 @@
     
     return nil;
 }
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
 
     if (_delegate && [_delegate respondsToSelector:@selector(collectionView:cellForItemAtIndexPath:)]) {
         
@@ -258,7 +235,7 @@
     return [self.fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     
     if (_delegate && [_delegate respondsToSelector:@selector(tableView:cellForRowAtIndexPath:)]) {

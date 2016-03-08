@@ -10,10 +10,19 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
+@interface LMCDStackSort : NSObject
+
+@property (nonatomic, strong, readonly) NSString *key;
+@property (nonatomic, assign, readonly) BOOL ascending;
+
++ (instancetype)sort:(NSString *)key asc:(BOOL)ascending;
+
+@end
+
 @class LMCDStackFetchResultsController;
 
 @protocol LMCDStackFetchResultsControllerDelegate <NSObject, UITableViewDataSource, UICollectionViewDataSource>
-
+@optional
 -(void)LMCDStackFetchResultsControllerDidFetchData:(LMCDStackFetchResultsController *)lmcdStackController;
 
 -(void)LMCDStackFetchResultsController:(LMCDStackFetchResultsController *)lmcdStackController
@@ -42,50 +51,26 @@
 
 @property (nonatomic, assign) id<LMCDStackFetchResultsControllerDelegate>delegate;
 
-@property (nonatomic, assign, readonly) NSManagedObjectContext          *context;
-
-@property (nonatomic, strong, readonly) NSFetchRequest                  *fetchRequest;
 @property (nonatomic, strong, readonly) NSFetchedResultsController      *fetchedResultsController;
-@property (nonatomic, strong, readonly) NSString                        *sectionName;
-@property (nonatomic, strong, readonly) NSString                        *entityName;
-@property (nonatomic, strong, readonly) NSArray                         *sortDescriptors;
-@property (nonatomic, strong) NSPredicate                               *predicate;
-@property (nonatomic, readonly) NSUInteger                              batchSize;
-
-
 @property (nonatomic, assign) UICollectionView                          *collectionView;
 @property (nonatomic, assign) UITableView                               *tableView;
 
-@property (nonatomic, strong) NSString                                  *name;
-
--(void)fetchData;
+- (void)fetchData;
 
 - (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initForEntityName:(NSString *)entityName
-                          context:(NSManagedObjectContext *)context
-                      sectionName:(NSString *)sectionName
-                  sortDescriptors:(NSArray *)sortDescriptors
-                        batchSize:(NSUInteger)batchSize
-                         delegate:(id<LMCDStackFetchResultsControllerDelegate>)delegate NS_DESIGNATED_INITIALIZER;
 
-+ (instancetype)controllerForEntityName:(NSString *)entityName
-                                context:(NSManagedObjectContext *)context
-                            sectionName:(NSString *)sectionName
-                        sortDescriptors:(NSArray *)sortDescriptors
-                              batchSize:(NSUInteger)batchSize
-                               delegate:(id<LMCDStackFetchResultsControllerDelegate>)delegate;
++ (instancetype)controllerForEntity:(Class)entityClass
+                          predicate:(NSPredicate *)predicate
+                            context:(NSManagedObjectContext *)context
+                        sectionName:(NSString *)sectionName
+                          cacheName:(NSString *)cacheName
+                    sortDescriptors:(NSArray<LMCDStackSort *> *)sortDescriptors
+                          batchSize:(NSUInteger)batchSize
+                           delegate:(id<LMCDStackFetchResultsControllerDelegate>)delegate;
 
 
 @end
 
-@interface LMCDStackSort : NSObject
-
-@property (nonatomic, strong, readonly) NSString *key;
-@property (nonatomic, assign, readonly) BOOL ascending;
-
-+ (instancetype)sort:(NSString *)key asc:(BOOL)ascending;
-
-@end
 @interface NSFetchedResultsController(LMCDStack)
 
 + (instancetype)controllerForEntity:(Class)entityClass
