@@ -21,7 +21,7 @@ extern  NSString * _Nonnull const kLMCDStackDidChangeNotificationName;
 
 @property (nonatomic, strong, readonly, nonnull)  NSManagedObjectModel            *managedObjectModel;
 @property (nonatomic, strong, readonly, nonnull)  NSManagedObjectContext          *managedObjectContext;
-@property (nonatomic, strong, readonly, nullable) NSManagedObjectContext          *backgroundThreadContext;
+@property (nonatomic, strong, readonly, nonnull) NSManagedObjectContext          *backgroundThreadContext;
 
 @property (nonatomic, strong, readonly, nonnull) NSPersistentStoreCoordinator  *persistentStoreCoordinator;
 @property (nonatomic, strong, readonly, nonnull) NSURL *persistentStorePath;

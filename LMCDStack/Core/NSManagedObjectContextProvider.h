@@ -10,7 +10,6 @@
 
 @protocol NSManagedObjectContextProvider <NSObject>
 
-@property (nonatomic, readonly) NSManagedObjectContext *managedObjectContext;
-
-
+@property (nonatomic, strong, readonly, nonnull) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong, readonly, nonnull) NSManagedObjectContext *backgroundThreadContext;
 @end
