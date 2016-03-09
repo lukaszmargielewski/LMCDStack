@@ -10,14 +10,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
-@interface LMCDStackSort : NSObject
-
-@property (nonatomic, strong, readonly) NSString *key;
-@property (nonatomic, assign, readonly) BOOL ascending;
-
-+ (instancetype)sort:(NSString *)key asc:(BOOL)ascending;
-
-@end
+#import "NSFetchedResultsController+LMCDStack.h"
 
 @class LMCDStackFetchResultsController;
 
@@ -46,7 +39,6 @@
 
 @end
 
-
 @interface LMCDStackFetchResultsController : NSObject<NSFetchedResultsControllerDelegate, UITableViewDataSource, UICollectionViewDataSource>
 
 @property (nonatomic, assign) id<LMCDStackFetchResultsControllerDelegate>delegate;
@@ -69,16 +61,4 @@
                            delegate:(id<LMCDStackFetchResultsControllerDelegate>)delegate;
 
 
-@end
-
-@interface NSFetchedResultsController(LMCDStack)
-
-+ (instancetype)controllerForEntity:(Class)entityClass
-                          predicate:(NSPredicate *)predicate
-                            context:(NSManagedObjectContext *)context
-                        sectionName:(NSString *)sectionName
-                          cacheName:(NSString *)cacheName
-                    sortDescriptors:(NSArray<LMCDStackSort *> *)sortDescriptors
-                          batchSize:(NSUInteger)batchSize
-                           delegate:(id<NSFetchedResultsControllerDelegate>)delegate;
 @end
