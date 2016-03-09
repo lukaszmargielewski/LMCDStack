@@ -11,15 +11,16 @@
 #import "LMCDStackCommon.h"
 #import "NSManagedObjectContext+Queries.h"
 #import "NSManagedObjectContext+Insert.h"
+#import "NSManagedObjectContextProvider.h"
 
 extern  NSString * _Nonnull const kLMCDStackDidSaveNotificationName;
 extern  NSString * _Nonnull const kLMCDStackDidChangeNotificationName;
 
 
-@interface LMCDStack : NSObject
+@interface LMCDStack : NSObject<NSManagedObjectContextProvider>
 
 @property (nonatomic, strong, readonly, nonnull)  NSManagedObjectModel            *managedObjectModel;
-@property (nonatomic, strong, readonly, nonnull)  NSManagedObjectContext          *mainThreadContext;
+@property (nonatomic, strong, readonly, nonnull)  NSManagedObjectContext          *managedObjectContext;
 @property (nonatomic, strong, readonly, nullable) NSManagedObjectContext          *backgroundThreadContext;
 
 @property (nonatomic, strong, readonly, nonnull) NSPersistentStoreCoordinator  *persistentStoreCoordinator;

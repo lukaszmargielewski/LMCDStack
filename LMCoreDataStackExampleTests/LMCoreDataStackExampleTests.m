@@ -54,7 +54,7 @@
         dispatch_sync(dispatch_get_main_queue(), ^{
         
         
-            NSUInteger countMain = [weakSelf.cdStack.mainThreadContext countEntitities:kTestEntityName predicate:nil];
+            NSUInteger countMain = [weakSelf.cdStack.managedObjectContext countEntitities:kTestEntityName predicate:nil];
             
             NSAssert2(count == countMain, @"countMain = %i, expected %i", countMain, count);
             

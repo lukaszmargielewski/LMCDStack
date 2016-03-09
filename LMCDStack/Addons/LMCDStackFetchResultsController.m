@@ -15,6 +15,12 @@
 
 #import "LMCDStackFetchResultsController.h"
 
+@interface LMCDStackFetchResultsController()<UICollectionViewDataSource, UITableViewDataSource>
+
+@property (nonatomic, assign) BOOL delegateConformsToUITableViewDataSourceProtocol;
+@property (nonatomic, assign) BOOL delegateConformsToUICollectionViewDataSourceProtocol;
+
+@end
 @implementation LMCDStackFetchResultsController{
     
     NSMutableArray *_objectChanges;
@@ -90,7 +96,9 @@
                                                                           batchSize:batchSize
                                                                            delegate:self];
         
-        _delegate       = delegate;
+        _delegate  = delegate;
+        _delegateConformsToUITableViewDataSourceProtocol = [_delegate conformsToProtocol:@protocol(UITableViewDataSource)];
+        _delegateConformsToUICollectionViewDataSourceProtocol = [_delegate conformsToProtocol:@protocol(UICollectionViewDataSource)];
         
     }
     
@@ -158,54 +166,70 @@
 }
 
 
-#pragma mark -  UICollectionView & UITableView Data Source:
+#pragma mark -  UICollectionView Data Source:
 
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return [[self.fetchedResultsController sections] count];
 }
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView
+     numberOfItemsInSection:(NSInteger)section {
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
     return [sectionInfo numberOfObjects];
 }
 
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind
+                                 atIndexPath:(NSIndexPath *)indexPath {
 
     if(_delegate && [_delegate respondsToSelector:@selector(collectionView:viewForSupplementaryElementOfKind:atIndexPath:)]){
     
-        return [_delegate collectionView:collectionView viewForSupplementaryElementOfKind:kind atIndexPath:indexPath];
+        return [(id<UICollectionViewDataSource>)_delegate collectionView:collectionView viewForSupplementaryElementOfKind:kind atIndexPath:indexPath];
     }
     
     return nil;
 }
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath{
 
-    if (_delegate && [_delegate respondsToSelector:@selector(collectionView:cellForItemAtIndexPath:)]) {
+    if (_delegateConformsToUICollectionViewDataSourceProtocol) {
         
-        return [_delegate collectionView:collectionView cellForItemAtIndexPath:indexPath];
+        return [(id<UICollectionViewDataSource>)_delegate collectionView:collectionView cellForItemAtIndexPath:indexPath];
         
     }
     return nil;
 
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+
+//TODO: Implement redirection:
+- (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath { return NO;}
+
+- (void)collectionView:(UICollectionView *)collectionView moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath*)destinationIndexPath {}
+
+#pragma mark -  UITableView Data Source:
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
         return [self.fetchedResultsController sections].count;
  
 }
+
 - (NSInteger)tableView:(UITableView *)t numberOfRowsInSection:(NSInteger)section {
         
         id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
         return [sectionInfo numberOfObjects];
 
 }
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     NSString *sectionTitle = [sectionInfo name];
     return sectionTitle;
 }
+
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)table {
     
     NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:[self.fetchedResultsController.sections count]];
@@ -221,31 +245,36 @@
     
     return [self.fetchedResultsController sectionIndexTitles];
 }
+
 - (NSInteger)tableView:(UITableView *)table sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
-    // tell table which section corresponds to section title/index (e.g. "B",1))
-    
-    if ([title isEqualToString:@"Æ"]) {
-        title = @"\u2206";
-    } else if ([title isEqualToString:@"Ø"]) {
-        title = @"\u0178";
-    } else if ([title isEqualToString:@"Å"]) {
-        title = @"\u2248";
-    }
     
     return [self.fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     
-    if (_delegate && [_delegate respondsToSelector:@selector(tableView:cellForRowAtIndexPath:)]) {
+    if (_delegateConformsToUITableViewDataSourceProtocol) {
         
-        [_delegate tableView:tableView cellForRowAtIndexPath:indexPath];
+        [(id<UITableViewDataSource>)_delegate tableView:tableView cellForRowAtIndexPath:indexPath];
         
     }
     return nil;
 
 }
+
+//TODO: Implement redirection:
+- (nullable NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section { return nil;}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath { return NO;}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {return NO; }
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {}
+
+
 #pragma mark - Fetch controller delegate:
 
 

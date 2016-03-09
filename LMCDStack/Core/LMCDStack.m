@@ -18,7 +18,7 @@ NSString * const kLMCDStackDidChangeNotificationName = @"kLMCDStackDidChangeNoti
 @interface LMCDStack ()
 
 @property (nonatomic, strong, readwrite, nonnull)  NSManagedObjectModel            *managedObjectModel;
-@property (nonatomic, strong, readwrite, nonnull)  NSManagedObjectContext          *mainThreadContext;
+@property (nonatomic, strong, readwrite, nonnull)  NSManagedObjectContext          *managedObjectContext;
 @property (nonatomic, strong, readwrite, nullable) NSManagedObjectContext          *backgroundThreadContext;
 
 @property (nonatomic, strong, readwrite, nonnull) NSPersistentStoreCoordinator  *persistentStoreCoordinator;
@@ -83,19 +83,19 @@ NSString * const kLMCDStackDidChangeNotificationName = @"kLMCDStackDidChangeNoti
         return _managedObjectModel;
     }
 }
-- (NSManagedObjectContext *)mainThreadContext{
+- (NSManagedObjectContext *)managedObjectContext{
     
     NSAssert([NSThread isMainThread], @"Trying to access main moc from NOT main thread");
     
     
-    if (!_mainThreadContext) {
+    if (!_managedObjectContext) {
         
-        _mainThreadContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-        [_mainThreadContext setPersistentStoreCoordinator:self.persistentStoreCoordinator];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainContextDidSave:) name:NSManagedObjectContextDidSaveNotification object:_mainThreadContext];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainContextDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:_mainThreadContext];
+        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        [_managedObjectContext setPersistentStoreCoordinator:self.persistentStoreCoordinator];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainContextDidSave:) name:NSManagedObjectContextDidSaveNotification object:_managedObjectContext];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainContextDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:_managedObjectContext];
     }
-    return _mainThreadContext;
+    return _managedObjectContext;
     
     
     
@@ -248,7 +248,7 @@ NSString * const kLMCDStackDidChangeNotificationName = @"kLMCDStackDidChangeNoti
         dispatch_sync(dispatch_get_main_queue(), ^{
             
             CDLog(@"    CDdb - mWmoc didsave - about to merge changes with main moc");
-            [self.mainThreadContext mergeChangesFromContextDidSaveNotification:saveNotification];
+            [self.managedObjectContext mergeChangesFromContextDidSaveNotification:saveNotification];
             
             CDLog(@"    CDdb - mWmoc didsave - merged changes with main moc");
         });
@@ -281,12 +281,12 @@ NSString * const kLMCDStackDidChangeNotificationName = @"kLMCDStackDidChangeNoti
     NSAssert([NSThread isMainThread], @"Trying to save main moc from NOT main thread");
     
     
-    if(_mainThreadContext && [_mainThreadContext hasChanges]){
+    if(_managedObjectContext && [_managedObjectContext hasChanges]){
         
         NSError *error = nil;
         BOOL success = NO;
         @try {
-            success = [_mainThreadContext save:&error];
+            success = [_managedObjectContext save:&error];
             ////CDLog(@"SAVED MAIN MOC WITH SUCCESS: %i", success);
             
             if (error) {
@@ -304,7 +304,7 @@ NSString * const kLMCDStackDidChangeNotificationName = @"kLMCDStackDidChangeNoti
         
         if (reset) {
             
-            [_mainThreadContext reset];
+            [_managedObjectContext reset];
         }
         
         

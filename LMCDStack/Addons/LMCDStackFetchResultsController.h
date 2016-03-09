@@ -14,7 +14,7 @@
 
 @class LMCDStackFetchResultsController;
 
-@protocol LMCDStackFetchResultsControllerDelegate <NSObject, UITableViewDataSource, UICollectionViewDataSource>
+@protocol LMCDStackFetchResultsControllerDelegate <NSObject>
 @optional
 -(void)LMCDStackFetchResultsControllerDidFetchData:(LMCDStackFetchResultsController *)lmcdStackController;
 
@@ -39,7 +39,7 @@
 
 @end
 
-@interface LMCDStackFetchResultsController : NSObject<NSFetchedResultsControllerDelegate, UITableViewDataSource, UICollectionViewDataSource>
+@interface LMCDStackFetchResultsController : NSObject<NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, assign) id<LMCDStackFetchResultsControllerDelegate>delegate;
 
