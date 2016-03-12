@@ -215,12 +215,9 @@ NSString * const kLMCDStackDidChangeNotificationName = @"kLMCDStackDidChangeNoti
 #pragma mark - Multithreading support & merging with main thread context;:
 
 - (void)backgroundContextDidSave:(NSNotification *)saveNotification {
-  
-    
+      
     id saveInfo = [saveNotification userInfo];
-    
 
-    
     NSMutableDictionary *dddd = [[NSMutableDictionary alloc] init];
     
     NSSet *inserted = [saveInfo valueForKey:NSInsertedObjectsKey];

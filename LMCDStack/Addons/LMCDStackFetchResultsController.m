@@ -25,8 +25,6 @@
     
     NSMutableArray *_objectChanges;
     NSMutableArray *_sectionChanges;
-    
-    __block BOOL updated, downloaded, fetching, initial_fetch_attampted;
 }
 
 @synthesize fetchedResultsController = _fetchedResultsController;
@@ -34,7 +32,7 @@
 
 #pragma mark - Init & setup:
 
--(void)setCollectionView:(UICollectionView *)collectionView{
+- (void)setCollectionView:(UICollectionView *)collectionView{
 
     _collectionView = collectionView;
     _collectionView.dataSource = self;
@@ -45,8 +43,9 @@
     _tableView.dataSource = self;
 }
 
-#pragma mark - Fetch Results Controller:
 
+
+#pragma mark - Fetch Results Controller:
 
 + (instancetype)controllerForEntity:(Class)entityClass
                           predicate:(NSPredicate *)predicate
@@ -90,12 +89,12 @@
         _fetchedResultsController = [NSFetchedResultsController controllerForEntity:entityClass
                                                                           predicate:predicate
                                                                             context:context
+                                                              simpleSortDescriptors:sortDescriptors
                                                                         sectionName:sectionName
                                                                           cacheName:cacheName
-                                                                    sortDescriptors:sortDescriptors
                                                                           batchSize:batchSize
                                                                            delegate:self];
-        
+        _fetchedResultsController.delegate = self;
         _delegate  = delegate;
         _delegateConformsToUITableViewDataSourceProtocol = [_delegate conformsToProtocol:@protocol(UITableViewDataSource)];
         _delegateConformsToUICollectionViewDataSourceProtocol = [_delegate conformsToProtocol:@protocol(UICollectionViewDataSource)];
@@ -105,45 +104,19 @@
     return self;
 }
 
+
 #pragma mark - Fetching:
 
-- (void)prepeareFetchRequst {
-    
 
-}
-- (void)didFetchData {
-    
-    
-    if (self.collectionView) {
-        
-            [_collectionView reloadData];
-            
-        }
-    
-    if (self.tableView) {
-        
-            [_tableView reloadData];
-        }
-    
-    if (_delegate && [_delegate respondsToSelector:@selector(LMCDStackFetchResultsControllerDidFetchData:)]) {
-        
-        [_delegate LMCDStackFetchResultsControllerDidFetchData:self];
-        
-    }
-}
-- (void)performFetch {
-
-    NSError *error = nil;
-    
-    [self prepeareFetchRequst];
+- (void)fetchData {
     
     @try {
         
+        NSError *error = nil;
         if (self.fetchedResultsController && ![self.fetchedResultsController performFetch:&error]) {
             
             DLog(@"Unresolved error in fetchData %@", error);
         }
-        
     }
     @catch (NSException *exception) {
         DLog(@"Fetching exception: %@", exception);
@@ -151,24 +124,30 @@
     @finally {
         
     }
-    if (!initial_fetch_attampted)initial_fetch_attampted = YES;
-    fetching = NO;
     
-    [self didFetchData];
-}
-- (void)fetchData {
+    if (self.collectionView) {
+        
+        [_collectionView reloadData];
+    }
     
-    if (fetching)return;
-    fetching = YES;
-    [self performFetch];
+    if (self.tableView) {
+        
+        [_tableView reloadData];
+    }
     
-    
+    if (_delegate && [_delegate respondsToSelector:@selector(LMCDStackFetchResultsControllerDidFetchData:)]) {
+        
+        [_delegate LMCDStackFetchResultsControllerDidFetchData:self];
+        
+    }
 }
 
 
 #pragma mark -  UICollectionView Data Source:
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    
+    
     return [[self.fetchedResultsController sections] count];
 }
 
@@ -190,8 +169,10 @@
     
     return nil;
 }
+
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
-                  cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
     if (_delegateConformsToUICollectionViewDataSourceProtocol) {
         
@@ -204,9 +185,14 @@
 
 
 //TODO: Implement redirection:
-- (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath { return NO;}
+- (BOOL)collectionView:(UICollectionView *)collectionView
+canMoveItemAtIndexPath:(NSIndexPath *)indexPath { return NO;}
 
-- (void)collectionView:(UICollectionView *)collectionView moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath*)destinationIndexPath {}
+- (void)collectionView:(UICollectionView *)collectionView
+   moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath*)destinationIndexPath {
+
+}
+
 
 #pragma mark -  UITableView Data Source:
 
@@ -266,11 +252,18 @@
 //TODO: Implement redirection:
 - (nullable NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section { return nil;}
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath { return NO;}
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
+}
 
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {return NO; }
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return NO;
+}
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {}
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+
+}
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {}
 
@@ -278,7 +271,7 @@
 #pragma mark - Fetch controller delegate:
 
 
-- (void)willChangeContent:(NSFetchedResultsController *)controller {
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
 
 	// The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     UITableView *tableView = self.tableView;
@@ -290,10 +283,11 @@
     }
     
 }
+
 - (void)controller:(NSFetchedResultsController *)controller
   didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
            atIndex:(NSUInteger)sectionIndex
-     forChangeType:(NSFetchedResultsChangeType)type{
+     forChangeType:(NSFetchedResultsChangeType)type {
     
     NSMutableDictionary *change = [NSMutableDictionary new];
     
@@ -331,7 +325,7 @@
    didChangeObject:(id)anObject
        atIndexPath:(NSIndexPath *)indexPath
      forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath{
+      newIndexPath:(NSIndexPath *)newIndexPath {
     
     NSMutableDictionary *change = [NSMutableDictionary new];
     
@@ -372,7 +366,7 @@
     [_objectChanges addObject:change];
 }
 
-- (void)didChangeContent:(NSFetchedResultsController *)controller{
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
     UITableView *tableView = self.tableView;
     if(tableView)[tableView endUpdates];

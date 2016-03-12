@@ -23,10 +23,20 @@
 + (instancetype)controllerForEntity:(Class)entityClass
                           predicate:(NSPredicate *)predicate
                             context:(NSManagedObjectContext *)context
+                    sortDescriptors:(NSArray<NSSortDescriptor *> *)sortDescriptors
                         sectionName:(NSString *)sectionName
                           cacheName:(NSString *)cacheName
-                    sortDescriptors:(NSArray<LMCDStackSort *> *)sortDescriptors
                           batchSize:(NSUInteger)batchSize
                            delegate:(id<NSFetchedResultsControllerDelegate>)delegate;
+
++ (instancetype)controllerForEntity:(Class)entityClass
+                          predicate:(NSPredicate *)predicate
+                            context:(NSManagedObjectContext *)context
+              simpleSortDescriptors:(NSArray<LMCDStackSort *> *)sortDescriptors
+                        sectionName:(NSString *)sectionName
+                          cacheName:(NSString *)cacheName
+                          batchSize:(NSUInteger)batchSize
+                           delegate:(id<NSFetchedResultsControllerDelegate>)delegate;
+
 @end
 

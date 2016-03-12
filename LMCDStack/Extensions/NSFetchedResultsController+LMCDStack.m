@@ -32,36 +32,59 @@
 + (instancetype)controllerForEntity:(Class)entityClass
                           predicate:(NSPredicate *)predicate
                             context:(NSManagedObjectContext *)context
+              simpleSortDescriptors:(NSArray<LMCDStackSort *> *)sortDescriptors
                         sectionName:(NSString *)sectionName
                           cacheName:(NSString *)cacheName
-                    sortDescriptors:(NSArray<LMCDStackSort *> *)sortDescriptors
                           batchSize:(NSUInteger)batchSize
                            delegate:(id<NSFetchedResultsControllerDelegate>)delegate {
     
-    NSString *entityName = NSStringFromClass(entityClass);
-    NSEntityDescription *entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:context];
-    
-    NSFetchRequest * _fetchRequest = [[NSFetchRequest alloc] init];
+    NSMutableArray <NSSortDescriptor *>*_sortDescriptors = nil;
     
     if (sortDescriptors && sortDescriptors.count) {
         
-        NSMutableArray <NSSortDescriptor *>*_sortDescriptors = [[NSMutableArray alloc] initWithCapacity:sortDescriptors.count];
+        _sortDescriptors = [[NSMutableArray alloc] initWithCapacity:sortDescriptors.count];
         
         for (LMCDStackSort *sort in sortDescriptors) {
             NSSortDescriptor *sss = [[NSSortDescriptor alloc] initWithKey:sort.key ascending:sort.ascending];
             [_sortDescriptors addObject:sss];
         }
         
-        _fetchRequest.sortDescriptors = _sortDescriptors;
     }
+    return [NSFetchedResultsController controllerForEntity:entityClass
+                                                 predicate:predicate
+                                                   context:context
+                                           sortDescriptors:_sortDescriptors
+                                               sectionName:sectionName
+                                                 cacheName:cacheName
+                                                 batchSize:batchSize
+                                                  delegate:delegate];
+}
+
+
++ (instancetype)controllerForEntity:(Class)entityClass
+                          predicate:(NSPredicate *)predicate
+                            context:(NSManagedObjectContext *)context
+                    sortDescriptors:(NSArray<NSSortDescriptor *> *)sortDescriptors
+                        sectionName:(NSString *)sectionName
+                          cacheName:(NSString *)cacheName
+                          batchSize:(NSUInteger)batchSize
+                           delegate:(id<NSFetchedResultsControllerDelegate>)delegate {
+
+    
+    NSString *entityName = NSStringFromClass(entityClass);
+    NSEntityDescription *entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:context];
+    
+    NSFetchRequest * _fetchRequest = [[NSFetchRequest alloc] init];
+    
     [_fetchRequest setPredicate:predicate]; // No predicate means all antries
     [_fetchRequest setEntity:entity];
+    [_fetchRequest setSortDescriptors:sortDescriptors];
     [_fetchRequest setFetchBatchSize:batchSize];
     
     NSFetchedResultsController *_fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:_fetchRequest managedObjectContext:context sectionNameKeyPath:sectionName cacheName:cacheName];
     _fetchedResultsController.delegate = delegate;
     
     return _fetchedResultsController;
-    
+
 }
 @end
