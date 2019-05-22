@@ -211,7 +211,9 @@
 }
 
 + (NSString *)entityNameForClass:(Class)class {
-
+    if ([(NSString *)class isKindOfClass:[NSString class]]) {
+        return (NSString *)class;
+    }
     return NSStringFromClass(class);
 }
 #pragma mark - Calculation helpers:
